@@ -1,0 +1,119 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>批注器 · 设置</title>
+    <style>
+      :root { --bg:#1e1f22; --bg2:#26282c; --bg3:#2f3237; --fg:#e6e6e6; --dim:#9aa0a6; --accent:#4c8dff; --border:#3a3d42; }
+      body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.6 system-ui,"Segoe UI","Microsoft YaHei",sans-serif; }
+      main { max-width: 640px; margin: 32px auto; padding: 0 20px 60px; }
+      h1 { font-size: 20px; }
+      h2 { font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; margin-top: 30px; }
+      label { display: block; margin: 14px 0 6px; color: var(--dim); font-size: 13px; }
+      label.checkbox { display: flex; align-items: center; gap: 8px; color: var(--fg); font-size: 13px; margin-top: 18px; }
+      label.checkbox input { width: auto; }
+      input, select { width: 100%; padding: 8px 10px; background: var(--bg3); color: var(--fg); border: 1px solid var(--border); border-radius: 8px; font: inherit; }
+      .row { display: flex; gap: 10px; }
+      .row > div { flex: 1; }
+      button { margin-top: 16px; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+      button.ghost { background: var(--bg3); border-color: var(--border); color: var(--fg); }
+      button.danger { background: transparent; border-color: #7a2b2b; color: #ff8b84; }
+      .hint { color: var(--dim); font-size: 12px; margin-top: 6px; line-height: 1.7; }
+      .warn { background: #3a2a17; border: 1px solid #6b4c22; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13px; line-height: 1.7; }
+      .ok { color: #6fcf97; }
+      .err { color: #ff7b72; }
+      code { background: var(--bg3); padding: 1px 5px; border-radius: 4px; }
+      a { color: var(--accent); }
+      .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 12px; }
+      .card p { margin: 0 0 8px; font-size: 12px; color: var(--dim); line-height: 1.7; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>设置</h1>
+      <div class="card">
+        <p>
+          <b>这是第三方客户端。</b>本扩展不内置任何 API key，也不代表任何模型厂商。
+          你在下面配置的服务只会收到你主动发送的内容（提问 + 你勾选附带的正文）。
+        </p>
+        <p>
+          界面是自建阅读器的一部分，<b>不会</b>去调用 <code>deepseek.com</code> 的网页版聊天，
+          只按 OpenAI 兼容格式调用你指定的 <code>/chat/completions</code> 接口。
+        </p>
+      </div>
+
+      <h2>模型服务</h2>
+      <label for="provider">服务</label>
+      <select id="provider"></select>
+      <div class="hint" id="providerHelp"></div>
+
+      <label for="baseUrl">Base URL</label>
+      <input id="baseUrl" placeholder="https://api.deepseek.com/v1" spellcheck="false" />
+
+      <div class="row">
+        <div>
+          <label for="model">模型</label>
+          <input id="model" list="modelList" placeholder="deepseek-flash" spellcheck="false" />
+          <datalist id="modelList"></datalist>
+        </div>
+        <div>
+          <label for="apiKey">API Key</label>
+          <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+      <div class="hint" id="keyHint">
+        仅保存在本机 <code>chrome.storage.local</code>，明文、不同步、不上传。
+        只有上面这个 Base URL 会收到它。
+      </div>
+
+      <label class="checkbox"><input id="toolsEnabled" type="checkbox" checked /> 启用工具调用（读当前页 / 搜文档 / 写笔记）</label>
+      <div class="hint">
+        本地小模型（3B–7B）多数不支持 OpenAI 风格 function calling，关掉更稳；
+        关掉后模型只能依据消息里附带的「当前页文本」回答。
+      </div>
+
+      <label for="extraBody">额外请求体（可选，JSON）</label>
+      <input id="extraBody" placeholder='{"think": false}' spellcheck="false" />
+      <div class="hint">
+        原样合并进请求 JSON，用于传各家特有参数。例：Ollama 的 Qwen3 / R1 想关掉思考过程用
+        <code>{"think": false}</code>；限制上下文用 <code>{"options":{"num_ctx":8192}}</code>。
+        留空则不加。
+      </div>
+
+      <div id="insecureWarn" class="warn" hidden>
+        <b>注意</b>：这个地址是 <code>http://</code> 且不是本机，API Key 会以明文在网络上传输。
+        远程服务建议改用 SSH 隧道（<code>ssh -L 11434:127.0.0.1:11434 user@host</code>），
+        这样本地回环通信，key 不出本机。
+      </div>
+
+      <div class="row">
+        <button id="btnSave">保存</button>
+        <button id="btnTest" class="ghost">测试连接</button>
+        <button id="btnClearKey" class="danger">清除本机 key</button>
+      </div>
+      <div id="status" class="hint"></div>
+
+      <h2>本地文件</h2>
+      <div class="warn">
+        本地 PDF/EPUB 用「拖入文件」打开时<b>不需要</b>任何文件权限。<br />
+        只有想用快捷键 <code>Ctrl+Shift+E</code> 或「打开当前标签页」时才需要：
+        <code>edge://extensions</code> → 本扩展 → 详细信息 → 打开「允许访问文件 URL」。
+      </div>
+
+      <h2>Ollama / 远程模型</h2>
+      <div class="card">
+        <p><b>1.</b> 远程机器上启动 Ollama（只监听回环，最安全）：<br />
+          <code>OLLAMA_HOST=127.0.0.1:11434 ollama serve</code></p>
+        <p><b>2.</b> 本机建 SSH 隧道（保持窗口开着）：<br />
+          <code>ssh -N -L 11434:127.0.0.1:11434 user@your-server</code></p>
+        <p><b>3.</b> 若直接连报 <b>HTTP 403</b>：这是 Ollama 的来源校验（它默认不放行
+          <code>chrome-extension://</code>），不是 key 问题。不改服务端的办法：在项目目录执行
+          <code>npm run relay</code>，然后把服务切到「Ollama（经本地中继）」，Base URL 用
+          <code>http://127.0.0.1:11500/v1</code>。</p>
+        <p><b>4.</b> 有权限的话也可以直接给服务端加
+          <code>OLLAMA_ORIGINS=chrome-extension://你的扩展ID</code> 再重启，然后仍用 11434 端口。</p>
+      </div>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

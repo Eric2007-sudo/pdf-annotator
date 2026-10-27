@@ -1,0 +1,22 @@
+{
+  "name": "pdf-annotator",
+  "version": "0.1.0",
+  "description": "Edge/Chrome 扩展：PDF/EPUB/网页批注 + 侧边栏 LLM",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vendor": "node scripts/sync-vendor.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "postinstall": "node scripts/sync-vendor.mjs",
+    "check": "node scripts/check.mjs",
+    "relay": "node scripts/ollama-relay.mjs",
+    "pack": "node scripts/pack.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dompurify": "^3.4.17",
+    "epubjs": "^0.3.93",
+    "marked": "^12.0.2",
+    "pdfjs-dist": "^4.10.38"
+  }
+}

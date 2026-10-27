@@ -1,0 +1,25 @@
+# 依赖与生成物
+node_modules/
+
+# 由 npm run vendor 生成（pdf.js / epub.js / marked / DOMPurify）
+vendor/
+
+# 打包产物
+dist/
+*.zip
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志与临时文件
+*.log
+npm-debug.log*
+.env
+.env.*
+
+# 计划/笔记类工作文件
+.plan/

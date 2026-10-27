@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>批注面板</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="notes" role="tab">批注</button>
+      <button class="tab" data-tab="agent" role="tab">Agent</button>
+      <div class="tab-spacer"></div>
+      <button class="icon-mini" id="btnSettings" title="设置">⚙</button>
+    </nav>
+
+    <!-- 批注列表 -->
+    <section class="pane active" data-pane="notes">
+      <div class="docbar">
+        <span id="panelDocTitle" class="docbar-title">未打开文档</span>
+        <span id="panelDocMeta" class="docbar-meta"></span>
+      </div>
+      <div class="openbar" id="openBar">
+        <button id="btnOpenReader" class="btn primary">打开阅读器（可拖入文件）</button>
+        <button id="btnOpenCurrent" class="btn">用批注器打开当前标签页</button>
+      </div>
+      <div class="filter">
+        <input id="filterInput" type="search" placeholder="搜索批注 / 笔记…" />
+        <button id="btnExportMd" class="icon-mini" title="导出 Markdown">⭳md</button>
+        <button id="btnExportJson" class="icon-mini" title="导出 JSON">⭳json</button>
+      </div>
+      <div class="list" id="annList"></div>
+      <div class="list-head">整页 / 整书笔记</div>
+      <div class="list" id="noteList" style="flex:0 0 auto;max-height:30vh"></div>
+      <div class="note-editor">
+        <textarea id="noteBody" placeholder="写整页笔记…"></textarea>
+        <div class="note-editor-row">
+          <label>位置 <input id="notePage" type="number" min="1" style="width:64px" /></label>
+          <div style="flex:1"></div>
+          <button id="btnAddNote" class="btn primary">添加笔记</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- API Agent -->
+    <section class="pane" data-pane="agent">
+      <div class="disclosure" id="agentDisclosure">
+        <b>第三方客户端</b> · 通过 API 调用 <span id="agentVendor">DeepSeek</span>
+        （<code id="agentModel">—</code>），与 DeepSeek 官方无关，非其官方产品。
+      </div>
+      <div class="chat" id="chat"></div>
+      <div class="composer">
+        <div class="composer-toolbar">
+          <label class="checkbox"><input type="checkbox" id="usePageText" checked /> 附带当前页文本</label>
+          <span class="muted" id="ctxHint"></span>
+        </div>
+        <textarea id="chatInput" placeholder="问点什么…（Enter 发送，Shift+Enter 换行）"></textarea>
+        <div class="composer-row">
+          <button id="btnClearChat" class="btn">清空</button>
+          <div style="flex:1"></div>
+          <button id="btnStop" class="btn hidden">停止</button>
+          <button id="btnSend" class="btn primary">发送</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="diag.js"></script>
+    <script src="/vendor/marked/marked.min.js"></script>
+    <script src="/vendor/dompurify/purify.min.js"></script>
+    <script type="module" src="panel.js"></script>
+  </body>
+</html>

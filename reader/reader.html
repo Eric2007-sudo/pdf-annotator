@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>批注器</title>
+    <link rel="stylesheet" href="reader.css" />
+  </head>
+  <body data-mode="loading">
+    <header class="topbar">
+      <button id="btnSidebarToggle" class="icon-btn" title="侧栏">☰</button>
+      <div class="doc-title" id="docTitle">加载中…</div>
+      <div class="spacer"></div>
+      <button id="btnZoomOut" class="icon-btn" title="缩小">−</button>
+      <span id="zoomLabel" class="zoom-label">100%</span>
+      <button id="btnZoomIn" class="icon-btn" title="放大">+</button>
+      <button id="btnFitWidth" class="icon-btn" title="适合宽度">⇔</button>
+      <span class="divider"></span>
+      <button id="btnPrev" class="icon-btn" title="上一页">‹</button>
+      <input id="pageInput" class="page-input" type="text" inputmode="numeric" value="1" />
+      <span id="pageCount" class="page-count">/ -</span>
+      <button id="btnNext" class="icon-btn" title="下一页">›</button>
+      <span class="divider"></span>
+      <button id="btnExport" class="icon-btn" title="导出">⭳</button>
+      <button id="btnOpenPanel" class="icon-btn" title="打开 AI 侧边栏">AI</button>
+    </header>
+
+    <main class="layout">
+      <aside class="outline" id="outline">
+        <div class="outline-head">目录</div>
+        <div class="outline-body" id="outlineBody"></div>
+      </aside>
+
+      <section class="stage" id="stage">
+        <div class="error-box hidden" id="errorBox"></div>
+        <div class="page-container" id="pageContainer"></div>
+      </section>
+
+      <aside class="panel-dock" id="panelDock" hidden>
+        <iframe id="dockFrame" title="批注与 AI 面板"></iframe>
+      </aside>
+    </main>
+
+    <div class="dropzone hidden" id="dropZone">
+      <div class="dropzone-inner">
+        <div class="dropzone-icon">⭳</div>
+        <h2>把 PDF 或 EPUB 拖到这里</h2>
+        <p class="muted">
+          也可以点下面的按钮选择文件。文件只在本机读取，不会上传。
+        </p>
+        <label class="btn primary">
+          选择文件…
+          <input id="fileInput" type="file" accept=".pdf,.epub,application/pdf,application/epub+zip" hidden />
+        </label>
+        <p class="muted small">
+          提示：Edge 自带的 PDF 阅读器不支持扩展右键菜单，所以本地文件请用这种方式打开；
+          网页上的链接仍可用右键「用批注器打开链接」。
+        </p>
+      </div>
+    </div>
+
+    <div class="hint hidden" id="fileHint">
+      <h2>无法读取本地文件</h2>
+      <p>扩展需要「允许访问文件网址」权限才能读 <code>file://</code> 的 PDF/EPUB。</p>
+      <ol>
+        <li>打开 <code>edge://extensions</code></li>
+        <li>找到本扩展 → 详细信息</li>
+        <li>打开「允许访问文件 URL」</li>
+        <li>回到这里刷新页面</li>
+      </ol>
+      <p>或者不折腾权限：直接把文件拖进窗口，或</p>
+      <button id="btnUseDrop" class="btn primary">改用拖入文件</button>
+    </div>
+
+    <script src="/vendor/epubjs/epub.min.js"></script>
+    <script type="module" src="reader.js"></script>
+  </body>
+</html>

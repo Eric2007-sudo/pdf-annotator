@@ -42,6 +42,7 @@ const server = http.createServer((req, res) => {
       "access-control-allow-methods": "GET,POST,PUT,DELETE,OPTIONS",
       "access-control-allow-headers": "content-type,authorization",
       "access-control-max-age": "86400",
+      "access-control-allow-private-network": "true",
     });
     res.end();
     return;
@@ -64,7 +65,7 @@ const server = http.createServer((req, res) => {
       headers,
     },
     (up) => {
-      const out = { ...up.headers, "access-control-allow-origin": "*" };
+      const out = { ...up.headers, "access-control-allow-origin": "*", "access-control-allow-private-network": "true" };
       delete out["content-encoding"]; // 未压缩转发
       res.writeHead(up.statusCode || 502, out);
       // 流式：SSE 边收边发，不攒包
